@@ -8,16 +8,19 @@ namespace SongsApi.Controllers
 {
     public class DemoController : ControllerBase
     {
+        private readonly IProvideServerStatus _statusService;
+
+        public DemoController(IProvideServerStatus statusService)
+        {
+            _statusService = statusService;
+        }
+
         // GET /status
         [HttpGet("/status")]
         public ActionResult<GetStatusResponse> GetTheStatus()
         {
 
-            var response = new GetStatusResponse
-            {
-                Message = "Everything is operational.",
-                LastChecked = DateTime.Now
-            };
+            GetStatusResponse response = _statusService.GetMyStatus();
             return Ok(response);
         }
         // GET /products/38938983983 (Route Param)

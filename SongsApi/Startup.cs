@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SongsApi.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace SongsApi
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddScoped<IProvideServerStatus, HopeServerStatus>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
