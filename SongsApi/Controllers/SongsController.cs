@@ -18,6 +18,27 @@ namespace SongsApi.Controllers
             _context = context;
         }
 
+
+        [HttpPost("/songs")]
+        public async Task<ActionResult> AddASong([FromBody] PostSongRequest request)
+        {
+            // 1. Validate the Entity
+            //    - If not valid, send a 400 with or without some details about what they did wrong.
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // 400
+            }
+            // 2 - modify the domain - save it to the database.
+            // 3 - Return:
+            //     - 201 Created Status Code
+            //     - Give them a copy of the newly created resource.
+            //     - Add a Location header with the URL of the newly created resource. 
+            //          Location: http://localhost:1337/songs/5
+
+
+            return Ok();
+        }
+
         [HttpGet("/songs")]
         public async Task<ActionResult> GetAllSongs()
         {
@@ -38,6 +59,30 @@ namespace SongsApi.Controllers
 
             return Ok(response);
         }
+        
+        [HttpGet("/songs/{id:int}")]
+        public async Task<ActionResult> GetASong(int id)
+        {
+
+            var response = await _context.Songs
+                .Where(s => s.IsActive && s.Id == id)
+                .Select(s => new GetSASongResponse
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Artist = s.Artist,
+                    RecommendedBy = s.RecommendedBy
+                }).SingleOrDefaultAsync(); // A song or null
+
+            if(response == null)
+            {
+                return NotFound();
+            } else
+            {
+                return Ok(response);
+            }
+        }
+        
         
     }
 }

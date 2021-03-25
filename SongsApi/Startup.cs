@@ -28,6 +28,16 @@ namespace SongsApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(pol =>
+                {
+                    pol.WithOrigins("http://localhost:4200");
+                    pol.AllowAnyHeader();
+                    pol.AllowAnyMethod();
+                    pol.AllowCredentials();
+                });
+            });
 
             services.AddDbContext<SongsDataContext>(options =>
             {
@@ -54,7 +64,7 @@ namespace SongsApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SongsApi v1"));
             }
-
+            app.UseCors();
             app.UseRouting();
 
             app.UseAuthorization();
