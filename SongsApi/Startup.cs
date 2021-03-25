@@ -34,7 +34,11 @@ namespace SongsApi
                 options.UseSqlServer(Configuration.GetConnectionString("songs"));
             });
             services.AddScoped<IProvideServerStatus, HopeServerStatus>();
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SongsApi", Version = "v1" });
