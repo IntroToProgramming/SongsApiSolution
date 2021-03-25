@@ -29,14 +29,31 @@ namespace SongsApi.Controllers
                 return BadRequest(ModelState); // 400
             }
             // 2 - modify the domain - save it to the database.
+            var song = new Song
+            {
+                Title = request.Title,
+                Artist = request.Artist,
+                RecommendedBy = request.RecommendedBy,
+                IsActive = true,
+                AddedToInventory = DateTime.Now
+            };
+            _context.Songs.Add(song);
+            await _context.SaveChangesAsync();
+
             // 3 - Return:
             //     - 201 Created Status Code
             //     - Give them a copy of the newly created resource.
             //     - Add a Location header with the URL of the newly created resource. 
             //          Location: http://localhost:1337/songs/5
+            var response = new GetSASongResponse
+            {
+                Id = song.Id,
+                Title = song.Title,
+                Artist = song.Artist,
+                RecommendedBy = song.RecommendedBy
+            };
 
-
-            return Ok();
+            return CreatedAtRoute("songs#getasong", new { id = response.Id }, response);
         }
 
         [HttpGet("/songs")]
@@ -60,7 +77,7 @@ namespace SongsApi.Controllers
             return Ok(response);
         }
         
-        [HttpGet("/songs/{id:int}")]
+        [HttpGet("/songs/{id:int}", Name ="songs#getasong")]
         public async Task<ActionResult> GetASong(int id)
         {
 
