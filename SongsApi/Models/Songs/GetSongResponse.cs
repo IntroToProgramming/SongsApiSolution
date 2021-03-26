@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SongsApi.Models.Songs
 {
-    public class GetSASongResponse
+    public class GetSongResponse
     {
         public int Id { get; set; }
         public string Title { get; set; }

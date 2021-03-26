@@ -13,5 +13,10 @@ namespace SongsApi.Domain
 
         }
         public DbSet<Song> Songs { get; set; }
+
+        public IQueryable<Song> GetActiveSongs()
+        {
+            return Songs.Where(s => s.IsActive);
+        }
     }
 }
