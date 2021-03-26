@@ -24,10 +24,24 @@ namespace SongsApi.Controllers
             _config = config;
         }
 
+        [HttpDelete("/songs/{id:int}")]
+        public async Task<ActionResult> RemoveSong(int id)
+        {
+            var savedSong = await _context.GetActiveSongs().SingleOrDefaultAsync(s => s.Id == id);
+
+            if(savedSong != null)
+            {
+                savedSong.IsActive = false;
+                await _context.SaveChangesAsync();
+            }
+
+            return NoContent();
+        }
 
         [HttpPost("/songs")]
         public async Task<ActionResult> AddASong([FromBody] PostSongRequest request)
         {
+            await Task.Delay(8 * 1000);
             // 1. Validate the Entity
             //    - If not valid, send a 400 with or without some details about what they did wrong.
             if(!ModelState.IsValid)
@@ -46,7 +60,7 @@ namespace SongsApi.Controllers
             //     - Add a Location header with the URL of the newly created resource. 
             //          Location: http://localhost:1337/songs/5
 
-            var response = _mapper.Map<GetSongResponse>(song);
+            var response = _mapper.Map<GetSASongResponse>(song);
 
             return CreatedAtRoute("songs#getasong", new { id = response.Id }, response);
         }
@@ -54,7 +68,9 @@ namespace SongsApi.Controllers
         [HttpGet("/songs")]
         public async Task<ActionResult> GetAllSongs()
         {
+            await Task.Delay(8 * 1000);
             var response = new GetSongsResponse();
+            
 
             var data = await _context.GetActiveSongs()
                 .ProjectTo<SongSummaryItem>(_config)
@@ -71,7 +87,7 @@ namespace SongsApi.Controllers
 
             var response = await _context.GetActiveSongs()
                 .Where(s => s.Id == id)
-                .ProjectTo<GetSongResponse>(_config)
+                .ProjectTo<GetSASongResponse>(_config)
                 .SingleOrDefaultAsync(); // A song or null
 
             if(response == null)

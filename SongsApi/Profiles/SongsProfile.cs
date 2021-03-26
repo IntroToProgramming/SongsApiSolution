@@ -15,7 +15,7 @@ namespace SongsApi.Profiles
 
             CreateMap<Song, GetSongsResponse>();
             CreateMap<Song, SongSummaryItem>();
-            CreateMap<Song, GetSongResponse>();
+            CreateMap<Song, GetSASongResponse>();
 
             CreateMap<PostSongRequest, Song>()
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom((_) => true))
